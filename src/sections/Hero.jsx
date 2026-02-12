@@ -57,10 +57,11 @@ export default function Hero() {
               className="relative"
             >
               <img
-                src="/profile.jpeg"
-                alt="Profile"
-                className="h-64 w-64 md:h-100 md:w-100 object-cover rounded-full border border-white/20 shadow-2xl"
-              />
+  src={`${import.meta.env.BASE_URL}profile.jpeg`}
+  alt="Profile"
+  className="h-64 w-64 md:h-100 md:w-100 object-cover rounded-full border border-white/20 shadow-2xl"
+/>
+
 
               {/* Outer ring glow */}
               <div className="absolute inset-0 rounded-full border border-white/10 ring-1 ring-indigo-400/30"></div>
