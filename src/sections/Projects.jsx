@@ -167,7 +167,7 @@ export default function Projects() {
                         {p.screens?.[0] ? (
                           <>
                             <img
-                              src={p.screens[0]}
+                              src={`${import.meta.env.BASE_URL}${p.screens[0]}`}
                               alt=""
                               className="absolute inset-0 h-full w-full object-cover blur-xl scale-105 opacity-25"
                               draggable={false}
@@ -176,7 +176,7 @@ export default function Projects() {
                             />
                             <div className="absolute inset-0 bg-black/30" />
                             <img
-                              src={p.screens[0]}
+                              src={`${import.meta.env.BASE_URL}${p.screens[0]}`}
                               alt={`${p.title} screenshot`}
                               className="relative z-10 h-full w-full object-contain"
                               draggable={false}

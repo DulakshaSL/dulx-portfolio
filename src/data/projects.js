@@ -10,10 +10,10 @@ export const projects = [
       "REST APIs + normalized MySQL schemas",
       "Git/GitHub collaboration workflow",
     ],
-     screens: [
-      "/shots/jobconnect/1.png",
-      "/shots/jobconnect/2.png",
-      "/shots/jobconnect/3.jpg",
+    screens: [
+      "shots/jobconnect/1.png",
+      "shots/jobconnect/2.png",
+      "shots/jobconnect/3.jpg",
     ],
   },
   {
@@ -26,6 +26,10 @@ export const projects = [
       "Backend business logic for inventory, orders, transactions",
       "Smooth frontend–backend integration",
     ],
+    screens: [
+      "shots/fashion/1.png",
+      "shots/fashion/2.png",
+    ],
   },
   {
     title: "Management System",
@@ -37,6 +41,9 @@ export const projects = [
       "Maintainable codebase using OOP principles",
       "Reduced operational errors via structured design",
     ],
+    screens: [
+      "shots/management/1.png",
+    ],
   },
   {
     title: "Signature Cuisine",
@@ -47,6 +54,10 @@ export const projects = [
       "Scalable food ordering web app",
       "Responsive UI for mobile + desktop",
       "Authentication, order tracking, menu management",
+    ],
+    screens: [
+      "shots/signature/1.png",
+      "shots/signature/2.png",
     ],
   },
 ];
