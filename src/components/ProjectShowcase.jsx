@@ -2,10 +2,10 @@ import { useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
-export default function ProjectShowcase({
-  images = [],
-  intervalMs = 3500,
-}) {
+const withBase = (path) =>
+  `${import.meta.env.BASE_URL}${String(path || "").replace(/^\/+/, "")}`;
+
+export default function ProjectShowcase({ images = [], intervalMs = 3500 }) {
   const safeImages = useMemo(
     () => (Array.isArray(images) ? images.filter(Boolean) : []),
     [images]
@@ -25,7 +25,6 @@ export default function ProjectShowcase({
   }, [hasMany, paused, safeImages.length, intervalMs]);
 
   useEffect(() => {
-    // if images change and current index is out of range
     if (index >= safeImages.length) setIndex(0);
   }, [safeImages.length, index]);
 
@@ -41,21 +40,32 @@ export default function ProjectShowcase({
     );
   }
 
+  const src = withBase(safeImages[index]);
+
   return (
     <div
       className="relative h-full w-full overflow-hidden rounded-2xl border border-white/10 bg-black/20"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
     >
-      {/* image */}
+      {/* blurred bg */}
+      <img
+        src={src}
+        alt=""
+        className="absolute inset-0 h-full w-full object-cover blur-2xl scale-110 opacity-30"
+        draggable={false}
+        loading="lazy"
+        decoding="async"
+      />
+      <div className="absolute inset-0 bg-black/35" />
+
+      {/* main image */}
       <AnimatePresence mode="wait">
         <motion.img
-          key={safeImages[index]}
-          src={safeImages[index]}
+          key={src}
+          src={src}
           alt="Project screenshot"
-          className="h-full w-full object-contain bg-gradient-to-br from-indigo-500/10 via-fuchsia-500/10 to-cyan-500/10
-"
-
+          className="relative z-10 h-full w-full object-contain"
           initial={{ opacity: 0, x: 14, scale: 1.01 }}
           animate={{ opacity: 1, x: 0, scale: 1 }}
           exit={{ opacity: 0, x: -14, scale: 1.01 }}
