@@ -1,0 +1,14 @@
+@import "tailwindcss";
+
+:root { color-scheme: dark; }
+
+html, body { height: 100%; scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background:
+  radial-gradient(120vw 60vh at 20% 10%, rgba(99,102,241,.30), transparent 70%),
+  radial-gradient(100vw 50vh at 80% 20%, rgba(168,85,247,.25), transparent 70%),
+  radial-gradient(90vw 60vh at 50% 90%, rgba(34,211,238,.15), transparent 75%),
+  #05060a;
+
+}
