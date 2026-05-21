@@ -1,5 +1,5 @@
 // src/sections/Skills.jsx
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState, useEffect } from "react";
 import { FadeUp } from "../components/Motion";
 import { skills } from "../data/skills";
 import { Sparkles, CheckCircle2, ChevronLeft, ChevronRight } from "lucide-react";
@@ -25,6 +25,7 @@ function LevelBadge({ level }) {
 }
 
 export default function Skills() {
+  // Desktop slider state (unchanged behavior)
   const [page, setPage] = useState(0);
   const [direction, setDirection] = useState(1);
 
@@ -46,10 +47,40 @@ export default function Skills() {
     setPage((p) => (p - 1 + totalPages) % totalPages);
   };
 
-  return (
-    <section id="skills" className="relative px-5 md:px-10 py-16 md:py-24 overflow-hidden">
-      <div className="mx-auto max-w-7xl">
+  // Mobile swipe carousel
+  const scrollerRef = useRef(null);
+  const [mobileIndex, setMobileIndex] = useState(0);
 
+  useEffect(() => {
+    const el = scrollerRef.current;
+    if (!el) return;
+
+    const onScroll = () => {
+      const children = Array.from(el.children);
+      if (!children.length) return;
+      const left = el.scrollLeft;
+      const width = el.clientWidth || 1;
+      const idx = Math.round(left / width);
+      setMobileIndex(Math.max(0, Math.min(idx, children.length - 1)));
+    };
+
+    el.addEventListener("scroll", onScroll, { passive: true });
+    return () => el.removeEventListener("scroll", onScroll);
+  }, []);
+
+  const scrollToMobile = (idx) => {
+    const el = scrollerRef.current;
+    if (!el) return;
+    const w = el.clientWidth;
+    el.scrollTo({ left: idx * w, behavior: "smooth" });
+  };
+
+  return (
+    <section
+      id="skills"
+      className="relative px-5 md:px-10 pb-0 py-16 md:py-24 overflow-hidden"
+    >
+      <div className="mx-auto max-w-7xl">
         {/* Heading */}
         <FadeUp>
           <div>
@@ -64,18 +95,104 @@ export default function Skills() {
 
             <p className="mt-3 text-white/60 max-w-3xl">
               My primary expertise is full-stack web application development,
-              backed by strong database knowledge and applied machine learning integration.
+              backed by strong database knowledge and applied machine learning
+              integration.
             </p>
           </div>
         </FadeUp>
 
-        {/* Slider */}
-        <div className="relative mt-12">
+        {/* ===================== */}
+        {/* MOBILE (swipe, no arrows) */}
+        {/* ===================== */}
+        <div className="mt-10 md:hidden">
+          <div
+            ref={scrollerRef}
+            className="flex gap-4 overflow-x-auto pb-3 snap-x snap-mandatory scroll-smooth [-ms-overflow-style:none] [scrollbar-width:none]"
+            style={{ WebkitOverflowScrolling: "touch" }}
+          >
+            {/* hide scrollbar (webkit) */}
+            <style>{`
+              .no-scrollbar::-webkit-scrollbar { display: none; }
+            `}</style>
 
+            {skills.map((s) => {
+              const Icon = s.icon;
+              return (
+                <article
+                  key={s.title}
+                  className="no-scrollbar snap-center shrink-0 w-full
+                             group relative overflow-hidden rounded-3xl
+                             border border-white/10 bg-white/[0.04] p-6 backdrop-blur
+                             transition hover:border-white/20"
+                >
+                  <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="flex items-start gap-4">
+                      <div className="grid h-12 w-12 place-items-center rounded-2xl border border-white/10 bg-black/30">
+                        <Icon className="h-5 w-5 text-indigo-200" />
+                      </div>
+
+                      <div>
+                        <h3 className="text-xl font-semibold text-white">
+                          {s.title}
+                        </h3>
+                        <p className="mt-2 text-sm text-white/60 leading-relaxed">
+                          {s.description}
+                        </p>
+                      </div>
+                    </div>
+
+                    <LevelBadge level={s.level} />
+                  </div>
+
+                  <div className="mt-6 space-y-3">
+                    {s.items.map((item) => (
+                      <div
+                        key={item}
+                        className="flex items-center gap-3 text-sm text-white/70"
+                      >
+                        <CheckCircle2 className="h-4 w-4 text-indigo-400 shrink-0" />
+                        {item}
+                      </div>
+                    ))}
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+
+          {/* Mobile dots */}
+          {skills.length > 1 && (
+            <div className="mt-4 flex justify-center">
+              <div className="flex gap-2 rounded-full border border-white/10 bg-black/30 px-3 py-2 backdrop-blur">
+                {skills.map((_, i) => (
+                  <button
+                    key={i}
+                    type="button"
+                    onClick={() => scrollToMobile(i)}
+                    className={`h-2 w-2 rounded-full transition ${
+                      i === mobileIndex
+                        ? "bg-white/80"
+                        : "bg-white/25 hover:bg-white/45"
+                    }`}
+                    aria-label={`Go to skill ${i + 1}`}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* ===================== */}
+        {/* DESKTOP (keep arrows + 2 per slide) */}
+        {/* ===================== */}
+        <div className="relative mt-12 hidden md:block">
           {/* Left Arrow */}
           {totalPages > 1 && (
             <button
               onClick={prev}
+              aria-label="Previous skills"
               className="absolute -left-16 top-1/2 -translate-y-1/2 z-20
                          h-12 w-12 rounded-full
                          border border-white/10
@@ -94,6 +211,7 @@ export default function Skills() {
           {totalPages > 1 && (
             <button
               onClick={next}
+              aria-label="Next skills"
               className="absolute -right-16 top-1/2 -translate-y-1/2 z-20
                          h-12 w-12 rounded-full
                          border border-white/10
@@ -120,7 +238,6 @@ export default function Skills() {
             >
               {current.map((s) => {
                 const Icon = s.icon;
-
                 return (
                   <article
                     key={s.title}
@@ -147,7 +264,6 @@ export default function Skills() {
                       <LevelBadge level={s.level} />
                     </div>
 
-                    {/* Feature rows */}
                     <div className="mt-6 space-y-3">
                       {s.items.map((item) => (
                         <div
@@ -164,7 +280,6 @@ export default function Skills() {
               })}
             </motion.div>
           </AnimatePresence>
-
         </div>
       </div>
     </section>

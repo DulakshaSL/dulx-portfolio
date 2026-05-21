@@ -29,6 +29,7 @@ export const projects = [
     screens: [
       "shots/fashion/1.png",
       "shots/fashion/2.png",
+      "shots/fashion/3.png",
     ],
   },
   {
@@ -56,8 +57,9 @@ export const projects = [
       "Authentication, order tracking, menu management",
     ],
     screens: [
-      "shots/signature/1.png",
-      "shots/signature/2.png",
+      "shots/signature/1.jpeg",
+      "shots/signature/2.jpeg",
+      "shots/signature/3.jpeg",
     ],
   },
 ];

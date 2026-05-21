@@ -3,13 +3,13 @@ import { profile } from "../data/profile";
 
 export default function Contact() {
   return (
-    <section id="contact" className="px-5 md:px-10 py-16 md:py-24">
+    <section id="contact" className="px-5 md:px-10 py-16 md:pt-46  md:py-24">
       <div className="mx-auto max-w-6xl">
         <FadeUp>
           <div className="rounded-3xl border border-white/10 bg-white/[0.04] p-8 md:p-10 backdrop-blur shadow-glow">
             <h2 className="text-3xl md:text-5xl font-semibold text-white">Let’s build something</h2>
             <p className="mt-3 text-white/60 max-w-2xl">
-              Open for internships / junior roles and freelance builds.
+              Open for freelance builds.
             </p>
 
             <div className="mt-6 flex flex-wrap gap-3">
