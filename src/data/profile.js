@@ -5,6 +5,6 @@ export const profile = {
   location: "Hirana, Panadura, Sri Lanka",
   github: "https://github.com/DulakshaSL",
   summary:
-    "Product-focused full-stack developer building end-to-end web applications — from responsive UI to secure backend APIs and scalable databases. Experienced in React.js, Node.js, and real-world ML integration, delivering clean architecture and performance-driven systems ready for growth."
+    "Product focused full stack developer building end to end web applications from responsive UI to secure backend APIs and scalable databases. Experienced in React.js, Node.js, and real world ML integration delivering clean architecture and performance driven systems ready for growth."
 ,
 };

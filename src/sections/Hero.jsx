@@ -62,7 +62,7 @@ export default function Hero() {
                 <img
                   src={`${import.meta.env.BASE_URL}profile.jpeg`}
                   alt="Profile"
-                  className="h-48 w-48 sm:h-56 sm:w-56 md:h-80 md:w-80 object-cover rounded-full border border-white/20 shadow-2xl"
+                  className="h-60 w-60 sm:h-56 sm:w-56 md:h-100 md:w-100 object-cover rounded-full border border-white/20 shadow-2xl"
                   draggable={false}
                 />
 

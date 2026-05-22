@@ -32,20 +32,7 @@ export const projects = [
       "shots/fashion/3.png",
     ],
   },
-  {
-    title: "Management System",
-    subtitle: "Java Desktop Application",
-    github: "https://github.com/DulakshaSL/Management-System",
-    stack: ["Java", "OOP"],
-    bullets: [
-      "Inventory management system to automate manual tracking",
-      "Maintainable codebase using OOP principles",
-      "Reduced operational errors via structured design",
-    ],
-    screens: [
-      "shots/management/1.png",
-    ],
-  },
+ 
   {
     title: "Signature Cuisine",
     subtitle: "Food Ordering Web Application",
@@ -60,6 +47,21 @@ export const projects = [
       "shots/signature/1.jpeg",
       "shots/signature/2.jpeg",
       "shots/signature/3.jpeg",
+    ],
+  },
+
+   {
+    title: "Management System",
+    subtitle: "Java Desktop Application",
+    github: "https://github.com/DulakshaSL/Management-System",
+    stack: ["Java", "OOP"],
+    bullets: [
+      "Inventory management system to automate manual tracking",
+      "Maintainable codebase using OOP principles",
+      "Reduced operational errors via structured design",
+    ],
+    screens: [
+      "shots/management/1.png",
     ],
   },
 ];
