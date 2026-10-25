@@ -146,8 +146,8 @@ export default function ProjectModal({ open, project, onClose }) {
                     >
                       <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover/item:opacity-100 bg-gradient-to-r from-transparent via-white/10 to-transparent" />
 
-                      <div className="mt-0.5 grid h-6 w-6 place-items-center rounded-full bg-indigo-500/15 ring-1 ring-indigo-300/25">
-                        <CheckCircle2 className="h-4 w-4 text-indigo-300" />
+                      <div className="mt-0.5 grid h-6 w-6 shrink-0 aspect-square place-items-center rounded-full bg-indigo-500/15 ring-1 ring-indigo-300/25">
+                        <CheckCircle2 className="h-4 w-4 shrink-0 text-indigo-300" />
                       </div>
 
                       <p className="pointer-events-none text-sm leading-relaxed text-white/70">

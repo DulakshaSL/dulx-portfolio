@@ -91,7 +91,7 @@ export default function Skills() {
         <FadeUp>
           <div>
             <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm text-white/70 backdrop-blur">
-              <Sparkles className="h-4 w-4 text-indigo-300" />
+              <Sparkles className="h-4 w-4 shrink-0 text-indigo-300" />
               Skills • Areas of Mastery
             </div>
 
@@ -128,19 +128,19 @@ export default function Skills() {
                   key={s.title}
                   className="no-scrollbar snap-center shrink-0 w-full
                              group relative overflow-hidden rounded-3xl
-                             border border-white/10 bg-white/[0.04] p-6 backdrop-blur
+                             border border-white/10 bg-white/[0.04] p-5 sm:p-6 backdrop-blur
                              transition hover:border-white/20"
                 >
                   <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
 
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="flex items-start gap-4">
-                      <div className="grid h-12 w-12 place-items-center rounded-2xl border border-white/10 bg-black/30">
-                        <Icon className="h-5 w-5 text-indigo-200" />
+                  <div className="flex items-start justify-between gap-3 sm:gap-4">
+                    <div className="flex items-start gap-3 sm:gap-4 min-w-0">
+                      <div className="grid h-11 w-11 sm:h-12 sm:w-12 shrink-0 aspect-square place-items-center rounded-2xl border border-white/10 bg-black/30">
+                        <Icon className="h-5 w-5 shrink-0 text-indigo-200" />
                       </div>
 
-                      <div>
-                        <h3 className="text-xl font-semibold text-white">
+                      <div className="min-w-0">
+                        <h3 className="text-lg sm:text-xl font-semibold text-white">
                           {s.title}
                         </h3>
                         <p className="mt-2 text-sm text-white/60 leading-relaxed">
@@ -149,7 +149,9 @@ export default function Skills() {
                       </div>
                     </div>
 
-                    <LevelBadge level={s.level} />
+                    <div className="shrink-0">
+                      <LevelBadge level={s.level} />
+                    </div>
                   </div>
 
                   <div className="mt-6 space-y-3">
@@ -251,14 +253,14 @@ export default function Skills() {
                   >
                     <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
 
-                    <div className="flex items-start justify-between gap-4">
-                      <div className="flex items-start gap-4">
-                        <div className="grid h-12 w-12 place-items-center rounded-2xl border border-white/10 bg-black/30">
-                          <Icon className="h-5 w-5 text-indigo-200" />
+                    <div className="flex items-start justify-between gap-3 sm:gap-4">
+                      <div className="flex items-start gap-3 sm:gap-4 min-w-0">
+                        <div className="grid h-11 w-11 sm:h-12 sm:w-12 shrink-0 aspect-square place-items-center rounded-2xl border border-white/10 bg-black/30">
+                          <Icon className="h-5 w-5 shrink-0 text-indigo-200" />
                         </div>
 
-                        <div>
-                          <h3 className="text-xl font-semibold text-white">
+                        <div className="min-w-0">
+                          <h3 className="text-lg sm:text-xl font-semibold text-white">
                             {s.title}
                           </h3>
                           <p className="mt-2 text-sm text-white/60 leading-relaxed">
@@ -267,7 +269,9 @@ export default function Skills() {
                         </div>
                       </div>
 
+                      <div className="shrink-0">
                       <LevelBadge level={s.level} />
+                    </div>
                     </div>
 
                     <div className="mt-6 space-y-3">

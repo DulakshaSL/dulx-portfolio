@@ -32,28 +32,28 @@ function TimelineCard({ icon: Icon, title, meta, submeta, bullets = [] }) {
       variants={item}
       whileHover={{ y: -2 }}
       transition={{ duration: 0.2 }}
-      className="group relative overflow-hidden rounded-3xl border border-white/10 bg-white/[0.04] p-6 md:backdrop-blur"
+      className="group relative overflow-hidden rounded-3xl border border-white/10 bg-white/[0.04] p-5 sm:p-6 md:backdrop-blur"
     >
       <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-indigo-400/40 to-transparent opacity-70" />
       <div className="pointer-events-none absolute -top-24 -right-24 h-64 w-64 rounded-full bg-white/5 blur-3xl" />
 
-      <div className="flex items-start gap-4">
-        <div className="grid h-12 w-12 place-items-center rounded-2xl border border-white/10 bg-black/30">
-          <Icon className="h-5 w-5 text-indigo-200" />
+      <div className="flex items-start gap-3 sm:gap-4">
+        <div className="grid h-11 w-11 sm:h-12 sm:w-12 shrink-0 aspect-square place-items-center rounded-2xl border border-white/10 bg-black/30">
+          <Icon className="h-5 w-5 shrink-0 text-indigo-200" />
         </div>
 
-        <div className="min-w-0">
-          <h3 className="text-lg font-semibold text-white">{title}</h3>
+        <div className="min-w-0 flex-1">
+          <h3 className="text-base sm:text-lg font-semibold text-white">{title}</h3>
 
           <div className="mt-2 flex flex-wrap items-center gap-2 text-sm text-white/60">
             <span className="inline-flex items-center gap-2">
-              <MapPin className="h-4 w-4 text-white/40" />
+              <MapPin className="h-4 w-4 shrink-0 text-white/40" />
               {meta}
             </span>
 
             {submeta && (
               <span className="inline-flex items-center gap-2">
-                <Calendar className="h-4 w-4 text-white/40" />
+                <Calendar className="h-4 w-4 shrink-0 text-white/40" />
                 {submeta}
               </span>
             )}
@@ -68,8 +68,8 @@ function TimelineCard({ icon: Icon, title, meta, submeta, bullets = [] }) {
               key={b}
               className="flex items-start gap-3 rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3"
             >
-              <div className="grid h-6 w-6 place-items-center rounded-full bg-indigo-500/15 ring-1 ring-indigo-300/25">
-                <CheckCircle2 className="h-4 w-4 text-indigo-300" />
+              <div className="grid h-6 w-6 shrink-0 aspect-square place-items-center rounded-full bg-indigo-500/15 ring-1 ring-indigo-300/25">
+                <CheckCircle2 className="h-4 w-4 shrink-0 text-indigo-300" />
               </div>
 
               <p className="text-sm text-white/70">{b}</p>
@@ -234,7 +234,7 @@ export default function Timeline() {
       <div className="mx-auto max-w-7xl">
         <FadeUp>
           <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm text-white/70">
-            <Sparkles className="h-4 w-4 text-indigo-300" />
+            <Sparkles className="h-4 w-4 shrink-0 text-indigo-300" />
             Education • Experience
           </div>
 
