@@ -13,6 +13,7 @@ export default function Projects() {
   // slider
   const [page, setPage] = useState(0);
   const [direction, setDirection] = useState(1);
+  const [paused, setPaused] = useState(false);
   
 
   // swipe
@@ -72,9 +73,9 @@ export default function Projects() {
   const SWIPE_THRESHOLD = 60;
 
   return (
-    <section id="projects"   className="relative px-5 md:px-10 pt-6 md:pt-36 pb-20">
+    <section id="projects" className="relative px-5 md:px-10 py-16 md:py-24 overflow-hidden">
       {/* AI background */}
-      <div className="pointer-events-none absolute inset-0 -z-10">
+      <div className="pointer-events-none absolute inset-0 -z-10 [mask-image:linear-gradient(to_bottom,transparent,black_15%,black_85%,transparent)]">
         <div className="absolute inset-0 opacity-[0.10] [background-image:linear-gradient(to_right,rgba(255,255,255,0.15)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.15)_1px,transparent_1px)] [background-size:56px_56px]" />
         <div className="absolute -top-24 left-10 h-80 w-80 rounded-full bg-indigo-500/20 blur-3xl" />
         <div className="absolute top-20 right-10 h-80 w-80 rounded-full bg-fuchsia-500/15 blur-3xl" />
@@ -85,7 +86,7 @@ export default function Projects() {
         {/* Heading */}
         <FadeUp>
           <header className="select-none cursor-default">
-            <h2 className="mt-12 text-3xl md:text-5xl font-semibold text-white pointer-events-none">
+            <h2 className="text-3xl md:text-5xl font-semibold text-white pointer-events-none">
               Featured Projects
             </h2>
 

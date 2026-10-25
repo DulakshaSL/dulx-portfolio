@@ -221,9 +221,15 @@ export default function Timeline() {
   return (
     <section
       id="timeline"
-      className="relative px-5 pt-12 md:px-10 md:py-16"
+      className="relative px-5 md:px-10 py-16 md:py-24 overflow-hidden"
     >
-      <div className="pointer-events-none absolute inset-0 -z-10 opacity-[0.06] [background-image:linear-gradient(to_right,rgba(255,255,255,0.15)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.15)_1px,transparent_1px)] [background-size:60px_60px]" />
+      <div className="pointer-events-none absolute inset-0 -z-10 opacity-[0.06] [mask-image:linear-gradient(to_bottom,transparent,black_20%,black_80%,transparent)] [background-image:linear-gradient(to_right,rgba(255,255,255,0.15)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.15)_1px,transparent_1px)] [background-size:60px_60px]" />
+
+      {/* Ambient gradient glow */}
+      <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
+        <div className="absolute top-12 -right-16 h-80 w-80 rounded-full bg-fuchsia-500/18 blur-3xl" />
+        <div className="absolute bottom-12 -left-16 h-80 w-80 rounded-full bg-cyan-500/15 blur-3xl" />
+      </div>
 
       <div className="mx-auto max-w-7xl">
         <FadeUp>

@@ -7,6 +7,13 @@ export const education = [
 ];
 
 export const experience = [
+   {
+    title: "Full-Stack Developer Intern",
+    org: "Source Code Limited",
+    date: "May 2026 – Present",
+    
+  },
+
   {
     title: "Account Assistant",
     org: "Abans PLC",

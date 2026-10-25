@@ -78,8 +78,14 @@ export default function Skills() {
   return (
     <section
       id="skills"
-      className="relative px-5 md:px-10 pb-0 py-16 md:py-24 overflow-hidden"
+      className="relative px-5 md:px-10 py-16 md:py-24 overflow-hidden"
     >
+      {/* Ambient gradient glow */}
+      <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
+        <div className="absolute top-1/4 -left-20 h-80 w-80 rounded-full bg-indigo-500/18 blur-3xl" />
+        <div className="absolute bottom-10 -right-20 h-96 w-96 rounded-full bg-purple-500/16 blur-3xl" />
+      </div>
+
       <div className="mx-auto max-w-7xl">
         {/* Heading */}
         <FadeUp>

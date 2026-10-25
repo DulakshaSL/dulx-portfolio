@@ -3,7 +3,11 @@ import { profile } from "../data/profile";
 
 export default function Contact() {
   return (
-    <section id="contact" className="px-5 md:px-10 py-16 md:pt-46  md:py-24">
+    <section id="contact" className="relative px-5 md:px-10 py-16 md:py-24 overflow-hidden">
+      {/* Ambient gradient glow */}
+      <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[450px] w-[450px] rounded-full bg-gradient-to-tr from-indigo-500/20 via-purple-500/20 to-cyan-500/15 blur-3xl" />
+      </div>
       <div className="mx-auto max-w-6xl">
         <FadeUp>
           <div className="rounded-3xl border border-white/10 bg-white/[0.04] p-8 md:p-10 backdrop-blur shadow-glow">

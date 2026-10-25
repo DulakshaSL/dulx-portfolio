@@ -2,14 +2,24 @@
 
 :root { color-scheme: dark; }
 
-html, body { height: 100%; scroll-behavior: smooth; }
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   margin: 0;
+  min-height: 100vh;
   overflow-x: hidden;
-  background:
-  radial-gradient(120vw 60vh at 20% 10%, rgba(99,102,241,.30), transparent 70%),
-  radial-gradient(100vw 50vh at 80% 20%, rgba(168,85,247,.25), transparent 70%),
-  radial-gradient(90vw 60vh at 50% 90%, rgba(34,211,238,.15), transparent 75%),
-  #05060a;
-
+  background-color: #05060a;
+  background-image:
+    radial-gradient(120vw 60vh at 20% 8%, rgba(99, 102, 241, 0.30), transparent 70%),
+    radial-gradient(100vw 50vh at 80% 20%, rgba(168, 85, 247, 0.25), transparent 70%),
+    radial-gradient(110vw 60vh at 15% 50%, rgba(99, 102, 241, 0.22), transparent 70%),
+    radial-gradient(100vw 55vh at 85% 72%, rgba(168, 85, 247, 0.22), transparent 70%),
+    radial-gradient(90vw 60vh at 50% 92%, rgba(34, 211, 238, 0.20), transparent 75%);
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
 }
+
+

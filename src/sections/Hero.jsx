@@ -8,7 +8,7 @@ export default function Hero() {
   return (
     <section
       id="home"
-      className="relative overflow-hidden px-5 pt-6 pb-14 md:px-10 md:pt-24 md:pb-20"
+      className="relative overflow-hidden px-5 md:px-10 pt-8 pb-16 md:pt-20 md:pb-24"
     >
       <div className="mx-auto grid max-w-7xl grid-cols-1 items-center gap-10 md:grid-cols-2 md:gap-12">
         {/* TEXT */}
