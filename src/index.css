@@ -1,25 +1,62 @@
 @import "tailwindcss";
 
-:root { color-scheme: dark; }
+:root {
+  color-scheme: dark;
+  --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --font-display: 'Outfit', 'Plus Jakarta Sans', sans-serif;
+}
 
 html {
   scroll-behavior: smooth;
+  font-family: var(--font-sans);
 }
 
 body {
   margin: 0;
   min-height: 100vh;
   overflow-x: hidden;
-  background-color: #05060a;
-  background-image:
-    radial-gradient(120vw 60vh at 20% 8%, rgba(99, 102, 241, 0.30), transparent 70%),
-    radial-gradient(100vw 50vh at 80% 20%, rgba(168, 85, 247, 0.25), transparent 70%),
-    radial-gradient(110vw 60vh at 15% 50%, rgba(99, 102, 241, 0.22), transparent 70%),
-    radial-gradient(100vw 55vh at 85% 72%, rgba(168, 85, 247, 0.22), transparent 70%),
-    radial-gradient(90vw 60vh at 50% 92%, rgba(34, 211, 238, 0.20), transparent 75%);
-  background-attachment: fixed;
-  background-repeat: no-repeat;
-  background-size: 100% 100%;
+  background-color: #0b0f19;
+  color: #f8fafc;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
+/* Custom Sleek Dark Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
 
+::-webkit-scrollbar-track {
+  background: #0b0f19;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.16);
+  border-radius: 9999px;
+  border: 2px solid #0b0f19;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(99, 102, 241, 0.6);
+}
+
+/* Typography helper */
+.font-display {
+  font-family: var(--font-display);
+}
+
+/* Card interactive surface reset: prevent text I-beam (type bar cursor) on cards */
+.card-surface,
+.card-surface * {
+  cursor: default;
+}
+
+.card-surface a,
+.card-surface button,
+.card-surface [role="button"],
+.card-surface a *,
+.card-surface button *,
+.card-surface [role="button"] * {
+  cursor: pointer !important;
+}

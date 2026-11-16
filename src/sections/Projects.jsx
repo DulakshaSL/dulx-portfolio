@@ -1,296 +1,443 @@
 // src/sections/Projects.jsx
-import { useEffect, useMemo, useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { projects } from "../data/projects";
 import { FadeUp } from "../components/Motion";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowUpRight, ChevronLeft, ChevronRight } from "lucide-react";
-import ProjectModal from "../components/ProjectModal";
+import {
+  ChevronLeft,
+  ChevronRight,
+  Github,
+  CheckCircle2,
+  ExternalLink,
+} from "lucide-react";
 
 export default function Projects() {
-  const [open, setOpen] = useState(false);
-  const [active, setActive] = useState(null);
-
-  // slider
-  const [page, setPage] = useState(0);
+  const [projectIndex, setProjectIndex] = useState(0);
   const [direction, setDirection] = useState(1);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [paused, setPaused] = useState(false);
-  
 
-  // swipe
-  const [dragX, setDragX] = useState(0);
+  const totalProjects = projects.length;
+  const currentProject = projects[projectIndex];
+  const screens = currentProject?.screens || [];
 
-  // responsive page size (mobile 1, desktop 3)
-  const [pageSize, setPageSize] = useState(() =>
-    typeof window !== "undefined" && window.innerWidth < 768 ? 1 : 3
-  );
-
-  const list = useMemo(() => projects || [], []);
-
+  // Reset active image index when switching projects
   useEffect(() => {
-    const onResize = () => setPageSize(window.innerWidth < 768 ? 1 : 3);
-    onResize();
-    window.addEventListener("resize", onResize, { passive: true });
-    return () => window.removeEventListener("resize", onResize);
-  }, []);
+    setActiveImageIndex(0);
+  }, [projectIndex]);
 
-  const totalPages = Math.max(1, Math.ceil(list.length / pageSize));
-
-  const current = useMemo(() => {
-    const start = page * pageSize;
-    return list.slice(start, start + pageSize);
-  }, [list, page, pageSize]);
-
-  // keep page valid if list/pagesize changes
+  // Auto-cycle through project screenshots
   useEffect(() => {
-    if (page > totalPages - 1) setPage(totalPages - 1);
-  }, [totalPages, page]);
+    if (screens.length <= 1 || paused) return;
 
-  const openModal = (p) => {
-    setActive(p);
-    setOpen(true);
-    setPaused(true);
-  };
+    const timer = setInterval(() => {
+      setActiveImageIndex((prev) => (prev + 1) % screens.length);
+    }, 3800);
 
-  const closeModal = () => {
-    setOpen(false);
-    setActive(null);
-    setPaused(false);
-  };
+    return () => clearInterval(timer);
+  }, [screens.length, paused, projectIndex]);
 
-  const prevPage = () => {
+  const prevProject = () => {
     setDirection(-1);
-    setPage((p) => (p - 1 + totalPages) % totalPages);
+    setProjectIndex((prev) => (prev - 1 + totalProjects) % totalProjects);
   };
 
-  const nextPage = () => {
+  const nextProject = () => {
     setDirection(1);
-    setPage((p) => (p + 1) % totalPages);
+    setProjectIndex((prev) => (prev + 1) % totalProjects);
   };
 
-  
+  const prevImage = (e) => {
+    e?.stopPropagation();
+    setActiveImageIndex((prev) => (prev - 1 + screens.length) % screens.length);
+  };
 
+  const nextImage = (e) => {
+    e?.stopPropagation();
+    setActiveImageIndex((prev) => (prev + 1) % screens.length);
+  };
 
-  const SWIPE_THRESHOLD = 60;
+  // Touch swipe handling for screenshots in mobile view
+  const imgTouchStartX = useRef(0);
+  const imgTouchEndX = useRef(0);
+
+  const handleImgTouchStart = (e) => {
+    imgTouchStartX.current = e.targetTouches[0].clientX;
+  };
+
+  const handleImgTouchMove = (e) => {
+    imgTouchEndX.current = e.targetTouches[0].clientX;
+  };
+
+  const handleImgTouchEnd = (e) => {
+    e.stopPropagation();
+    if (!imgTouchStartX.current || !imgTouchEndX.current) return;
+    const diff = imgTouchStartX.current - imgTouchEndX.current;
+    if (diff > 35) {
+      nextImage();
+    } else if (diff < -35) {
+      prevImage();
+    }
+    imgTouchStartX.current = 0;
+    imgTouchEndX.current = 0;
+  };
+
+  // Touch swipe handling for main project card on mobile
+  const cardTouchStartX = useRef(0);
+  const cardTouchEndX = useRef(0);
+
+  const handleCardTouchStart = (e) => {
+    cardTouchStartX.current = e.targetTouches[0].clientX;
+  };
+
+  const handleCardTouchMove = (e) => {
+    cardTouchEndX.current = e.targetTouches[0].clientX;
+  };
+
+  const handleCardTouchEnd = () => {
+    if (!cardTouchStartX.current || !cardTouchEndX.current) return;
+    const diff = cardTouchStartX.current - cardTouchEndX.current;
+    if (diff > 50) {
+      nextProject();
+    } else if (diff < -50) {
+      prevProject();
+    }
+    cardTouchStartX.current = 0;
+    cardTouchEndX.current = 0;
+  };
+
+  // Keyboard navigation for projects
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA") return;
+      if (e.key === "ArrowLeft") prevProject();
+      if (e.key === "ArrowRight") nextProject();
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [totalProjects]);
+
+  // Framer Motion slide variants
+  const projectSlideVariants = {
+    enter: (dir) => ({
+      x: dir > 0 ? 50 : -50,
+      opacity: 0,
+      scale: 0.985,
+    }),
+    center: {
+      x: 0,
+      opacity: 1,
+      scale: 1,
+      transition: {
+        x: { type: "spring", stiffness: 220, damping: 26, mass: 0.8 },
+        opacity: { duration: 0.35, ease: [0.16, 1, 0.3, 1] },
+        scale: { duration: 0.35, ease: [0.16, 1, 0.3, 1] },
+      },
+    },
+    exit: (dir) => ({
+      x: dir > 0 ? -50 : 50,
+      opacity: 0,
+      scale: 0.985,
+      transition: {
+        x: { type: "spring", stiffness: 220, damping: 26, mass: 0.8 },
+        opacity: { duration: 0.25, ease: "easeIn" },
+        scale: { duration: 0.25, ease: "easeIn" },
+      },
+    }),
+  };
 
   return (
     <section id="projects" className="relative px-5 md:px-10 py-16 md:py-24 overflow-hidden">
-      {/* AI background */}
-      <div className="pointer-events-none absolute inset-0 -z-10 [mask-image:linear-gradient(to_bottom,transparent,black_15%,black_85%,transparent)]">
-        <div className="absolute inset-0 opacity-[0.10] [background-image:linear-gradient(to_right,rgba(255,255,255,0.15)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.15)_1px,transparent_1px)] [background-size:56px_56px]" />
-        <div className="absolute -top-24 left-10 h-80 w-80 rounded-full bg-indigo-500/20 blur-3xl" />
-        <div className="absolute top-20 right-10 h-80 w-80 rounded-full bg-fuchsia-500/15 blur-3xl" />
-        <div className="absolute bottom-0 left-1/2 h-96 w-96 -translate-x-1/2 rounded-full bg-cyan-500/10 blur-3xl" />
-      </div>
-
       <div className="mx-auto max-w-7xl overflow-visible">
-        {/* Heading */}
+        {/* Section Header with Next/Previous Controls on Desktop & Tablet */}
         <FadeUp>
-          <header className="select-none cursor-default">
-            <h2 className="text-3xl md:text-5xl font-semibold text-white pointer-events-none">
-              Featured Projects
-            </h2>
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
+            <div>
+              <h2 className="font-display text-3xl md:text-5xl font-extrabold text-white tracking-tight">
+                Featured Projects
+              </h2>
+              <p className="mt-3 text-slate-300 max-w-2xl text-base leading-relaxed">
+                Full-stack applications engineered for real-world reliability, combining robust backend logic with intuitive interfaces and applied AI.
+              </p>
+            </div>
 
-            <p className="mt-3 text-white/60 max-w-2xl pointer-events-none">
-              Full-stack projects focused on real-world solutions, integrating scalable
-              architecture with applied AI and machine learning.
-            </p>
-          </header>
+            {/* Desktop / Tablet Modern Navigation Controls with Current of Total Projects */}
+            <div className="hidden md:flex items-center gap-3">
+              <div className="flex items-center gap-2 rounded-2xl border border-slate-700/80 bg-[#141b2d] px-4 py-2.5 shadow-sm mr-1">
+                <span className="text-xs uppercase tracking-wider text-slate-400 font-semibold font-display">
+                  Project
+                </span>
+                <span className="text-base font-bold text-white font-mono">
+                  {String(projectIndex + 1).padStart(2, "0")}
+                </span>
+                <span className="text-slate-500 font-mono">/</span>
+                <span className="text-sm font-medium text-slate-400 font-mono">
+                  {String(totalProjects).padStart(2, "0")}
+                </span>
+              </div>
+
+              <motion.button
+                type="button"
+                onClick={prevProject}
+                whileHover={{ scale: 1.08, x: -2 }}
+                whileTap={{ scale: 0.92 }}
+                transition={{ type: "spring", stiffness: 350, damping: 20 }}
+                className="flex h-11 w-11 items-center justify-center rounded-2xl border border-slate-700 bg-[#141b2d] text-slate-200 hover:text-white hover:border-indigo-400 hover:bg-[#1a233a] transition-all cursor-pointer shadow-sm"
+                aria-label="Previous project"
+              >
+                <ChevronLeft className="h-5 w-5" />
+              </motion.button>
+
+              <motion.button
+                type="button"
+                onClick={nextProject}
+                whileHover={{ scale: 1.08, x: 2 }}
+                whileTap={{ scale: 0.92 }}
+                transition={{ type: "spring", stiffness: 350, damping: 20 }}
+                className="flex h-11 w-11 items-center justify-center rounded-2xl border border-slate-700 bg-[#141b2d] text-slate-200 hover:text-white hover:border-indigo-400 hover:bg-[#1a233a] transition-all cursor-pointer shadow-sm"
+                aria-label="Next project"
+              >
+                <ChevronRight className="h-5 w-5" />
+              </motion.button>
+            </div>
+          </div>
         </FadeUp>
 
-        {/* Slider */}
-        <FadeUp>
+        {/* Big Showcase Carousel Container */}
+        <FadeUp delay={0.1}>
           <div
-  className="relative mt-7 md:overflow-visible overflow-x-clip"
-  onMouseEnter={() => setPaused(true)}
-  onMouseLeave={() => !open && setPaused(false)}
->
+            className="relative"
+            onMouseEnter={() => setPaused(true)}
+            onMouseLeave={() => setPaused(false)}
+          >
+            <AnimatePresence mode="popLayout" initial={false} custom={direction}>
+              <motion.div
+                key={projectIndex}
+                custom={direction}
+                variants={projectSlideVariants}
+                initial="enter"
+                animate="center"
+                exit="exit"
+                onTouchStart={handleCardTouchStart}
+                onTouchMove={handleCardTouchMove}
+                onTouchEnd={handleCardTouchEnd}
+                className="card-surface relative overflow-hidden rounded-3xl border border-slate-700/80 bg-[#131927] p-6 md:p-8 lg:p-10 backdrop-blur-xl shadow-[0_20px_50px_rgba(0,0,0,0.6)] cursor-default select-none touch-pan-y"
+              >
+                {/* Top Subtle Hairline Gradient Beam */}
+                <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-indigo-400/60 to-transparent opacity-80" />
 
-            <div className="relative">
-              {/* Desktop arrows only */}
-              {totalPages > 1 && (
-                <>
-                  <button
-                    type="button"
-                    onClick={prevPage}
-                    aria-label="Previous projects"
-                    className="
-                      hidden md:flex
-                      absolute -left-16 top-1/2 -translate-y-1/2 z-20
-                      h-12 w-12 rounded-full
-                      border border-white/10 bg-white/5 backdrop-blur-xl
-                      hover:bg-white/10 hover:border-white/20
-                      transition-all duration-300 hover:scale-110 active:scale-95
-                      items-center justify-center
-                      text-white/80 hover:text-white
-                    "
-                  >
-                    <ChevronLeft className="h-5 w-5" />
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={nextPage}
-                    aria-label="Next projects"
-                    className="
-                      hidden md:flex
-                      absolute -right-16 top-1/2 -translate-y-1/2 z-20
-                      h-12 w-12 rounded-full
-                      border border-white/10 bg-white/5 backdrop-blur-xl
-                      hover:bg-white/10 hover:border-white/20
-                      transition-all duration-300 hover:scale-110 active:scale-95
-                      items-center justify-center
-                      text-white/80 hover:text-white
-                    "
-                  >
-                    <ChevronRight className="h-5 w-5" />
-                  </button>
-                </>
-              )}
-
-              {/* Slide */}
-              <AnimatePresence mode="wait" initial={false}>
-                <motion.div
-                  key={`${page}-${pageSize}`}
-                  initial={{ opacity: 0, x: direction > 0 ? 90 : -90 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: direction > 0 ? -90 : 90 }}
-                  transition={{ type: "spring", stiffness: 80, damping: 18 }}
-                  className={`grid gap-4 ${
-                    pageSize === 1
-                      ? "grid-cols-1 max-w-[560px] mx-auto"
-                      : "lg:grid-cols-3"
-                  }`}
-                  drag="x"
-                  dragConstraints={{ left: 0, right: 0 }}
-                  dragElastic={0.12}
-                  onDrag={(_, info) => setDragX(info.offset.x)}
-                  onDragEnd={() => {
-                    if (dragX > SWIPE_THRESHOLD) prevPage();
-                    else if (dragX < -SWIPE_THRESHOLD) nextPage();
-                    setDragX(0);
-                  }}
-                >
-                  {current.map((p, i) => (
-                    <motion.div
-                      key={p.title}
-                      initial={{ opacity: 0, y: 12 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.45, ease: "easeOut", delay: i * 0.05 }}
-                      whileHover={{
-                        scale: 1.02,
-                        transition: { type: "spring", stiffness: 90, damping: 22 },
-                      }}
-                      className="group transform-gpu will-change-transform text-left relative overflow-hidden rounded-3xl border border-white/10 bg-white/[0.04] p-5 backdrop-blur transition hover:border-white/20"
+                {/* 2-Column Showcase: Left Image Carousel | Right Features & Details */}
+                <div className="grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-10 items-center">
+                  {/* LEFT COLUMN: Large Interactive Screenshot Showcase */}
+                  <div className="md:col-span-6 lg:col-span-7">
+                    <div
+                      onTouchStart={handleImgTouchStart}
+                      onTouchMove={handleImgTouchMove}
+                      onTouchEnd={handleImgTouchEnd}
+                      className="relative aspect-[16/10] w-full overflow-hidden rounded-2xl border border-slate-700/70 bg-[#0c111e] shadow-inner select-none touch-pan-y"
                     >
-                      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-indigo-400/40 to-transparent opacity-60" />
-                      <div className="pointer-events-none absolute -top-20 -right-20 h-56 w-56 rounded-full bg-white/5 blur-3xl" />
-
-                      <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-black/20 aspect-[16/10]">
-                        {p.screens?.[0] ? (
-                          <>
-                            <img
-                              src={`${import.meta.env.BASE_URL}${p.screens[0]}`}
-                              alt=""
-                              className="absolute inset-0 h-full w-full object-cover blur-xl scale-105 opacity-25"
+                      {screens.length > 0 ? (
+                        <>
+                          {/* Animated Active Screenshot Display */}
+                          <AnimatePresence mode="popLayout" initial={false}>
+                            <motion.img
+                              key={`${projectIndex}-${activeImageIndex}`}
+                              src={`${import.meta.env.BASE_URL}${screens[activeImageIndex]}`}
+                              alt={`${currentProject.title} screenshot ${activeImageIndex + 1}`}
+                              className="h-full w-full object-contain p-2 md:p-3 relative z-10"
+                              initial={{ opacity: 0, scale: 0.98 }}
+                              animate={{ opacity: 1, scale: 1 }}
+                              exit={{ opacity: 0, scale: 1.01 }}
+                              transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
                               draggable={false}
-                              loading="lazy"
-                              decoding="async"
                             />
-                            <div className="absolute inset-0 bg-black/30" />
-                            <img
-                              src={`${import.meta.env.BASE_URL}${p.screens[0]}`}
-                              alt={`${p.title} screenshot`}
-                              className="relative z-10 h-full w-full object-contain"
-                              draggable={false}
-                              loading="lazy"
-                              decoding="async"
-                            />
-                          </>
-                        ) : (
-                          <div className="h-full w-full grid place-items-center text-xs text-white/45">
-                            Add screenshots in /public/shots/...
-                          </div>
-                        )}
-                        <div className="pointer-events-none absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-black/55 to-transparent" />
-                      </div>
+                          </AnimatePresence>
 
-                      <div className="mt-4">
-                        <div className="flex items-start justify-between gap-3">
-                          <div className="min-w-0">
-                            <h3 className="text-base font-semibold text-white truncate pointer-events-none">
-                              {p.title}
-                            </h3>
-                            <p className="mt-1 text-sm text-white/60 line-clamp-2 pointer-events-none">
-                              {p.subtitle}
-                            </p>
-                          </div>
+                          {/* Top & bottom subtle gradient shades */}
+                          <div className="pointer-events-none absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-[#0c111e]/80 to-transparent z-10" />
+                          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-[#0c111e]/80 to-transparent z-10" />
 
-                          <button
-                            type="button"
-                            onClick={() => openModal(p)}
-                            className="shrink-0 inline-flex items-center gap-2 rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-xs text-white/80 hover:text-white hover:border-white/20 transition cursor-pointer"
-                            aria-label={`View ${p.title} case study`}
-                          >
-                            View
-                            <ArrowUpRight className="h-4 w-4 opacity-80" />
-                          </button>
-                        </div>
+                          {/* Screenshot Navigation Arrows inside image (Hidden on mobile, swipe used instead) */}
+                          {screens.length > 1 && (
+                            <>
+                              <motion.button
+                                type="button"
+                                onClick={prevImage}
+                                whileHover={{ scale: 1.15, x: -2 }}
+                                whileTap={{ scale: 0.9 }}
+                                className="absolute left-3 top-1/2 -translate-y-1/2 z-20 hidden md:flex h-9 w-9 items-center justify-center rounded-xl border border-slate-600 bg-[#141b2d]/90 text-slate-200 hover:text-white hover:border-indigo-400 hover:bg-[#1a233a] backdrop-blur-md transition-all cursor-pointer shadow-md"
+                                aria-label="Previous screenshot"
+                              >
+                                <ChevronLeft className="h-4 w-4" />
+                              </motion.button>
 
-                        <div className="mt-3 flex flex-wrap gap-2 select-none">
-                          {(p.stack || []).slice(0, 4).map((s) => (
-                            <span
-                              key={s}
-                              className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[11px] text-white/70 pointer-events-none"
-                            >
-                              {s}
-                            </span>
-                          ))}
-                          {(p.stack || []).length > 4 && (
-                            <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[11px] text-white/60 pointer-events-none">
-                              +{p.stack.length - 4}
-                            </span>
+                              <motion.button
+                                type="button"
+                                onClick={nextImage}
+                                whileHover={{ scale: 1.15, x: 2 }}
+                                whileTap={{ scale: 0.9 }}
+                                className="absolute right-3 top-1/2 -translate-y-1/2 z-20 hidden md:flex h-9 w-9 items-center justify-center rounded-xl border border-slate-600 bg-[#141b2d]/90 text-slate-200 hover:text-white hover:border-indigo-400 hover:bg-[#1a233a] backdrop-blur-md transition-all cursor-pointer shadow-md"
+                                aria-label="Next screenshot"
+                              >
+                                <ChevronRight className="h-4 w-4" />
+                              </motion.button>
+                            </>
                           )}
+
+                          {/* Screenshot dots indicator on image bottom */}
+                          {screens.length > 1 && (
+                            <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-20 flex gap-2 rounded-full border border-slate-700 bg-[#0e1424]/90 px-3 py-1.5 backdrop-blur-md shadow-md">
+                              {screens.map((_, idx) => (
+                                <button
+                                  key={idx}
+                                  type="button"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    setActiveImageIndex(idx);
+                                  }}
+                                  className={`h-2 rounded-full transition-all cursor-pointer ${
+                                    idx === activeImageIndex
+                                      ? "w-5 bg-indigo-400"
+                                      : "w-2 bg-slate-600 hover:bg-slate-400"
+                                  }`}
+                                  aria-label={`Go to screenshot ${idx + 1}`}
+                                />
+                              ))}
+                            </div>
+                          )}
+                        </>
+                      ) : (
+                        <div className="flex h-full w-full items-center justify-center text-sm text-slate-400">
+                          No screenshots available
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* RIGHT COLUMN: Project Features, Tech Stack & Action Details */}
+                  <div className="md:col-span-6 lg:col-span-5 flex flex-col justify-between">
+                    <div>
+                      {/* Project Title & Subtitle */}
+                      <h3 className="font-display text-2xl lg:text-3xl font-bold text-white tracking-tight">
+                        {currentProject.title}
+                      </h3>
+
+                      <p className="mt-1 text-base font-medium text-indigo-300">
+                        {currentProject.subtitle}
+                      </p>
+
+                      {/* Tech Stack Chips */}
+                      <div className="mt-4 flex flex-wrap gap-1.5 select-none">
+                        {(currentProject.stack || []).map((tech) => (
+                          <span
+                            key={tech}
+                            className="rounded-lg border border-slate-700 bg-[#0e1424] px-2.5 py-1 text-xs font-medium text-slate-200"
+                          >
+                            {tech}
+                          </span>
+                        ))}
+                      </div>
+
+                      {/* Key Features & Architecture Bullets */}
+                      <div className="mt-6 space-y-3">
+                        <h4 className="text-xs font-semibold uppercase tracking-wider text-slate-400 font-display">
+                          Key Features &amp; Architecture
+                        </h4>
+                        <div className="space-y-2.5">
+                          {(currentProject.bullets || []).map((bullet, bIdx) => (
+                            <div
+                              key={bIdx}
+                              className="flex items-start gap-3 rounded-xl border border-slate-700/60 bg-[#0e1424]/80 p-3 hover:border-slate-600 transition-colors"
+                            >
+                              <div className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-indigo-500/20 text-indigo-300">
+                                <CheckCircle2 className="h-3.5 w-3.5" />
+                              </div>
+                              <p className="text-sm leading-relaxed text-slate-200">
+                                {bullet}
+                              </p>
+                            </div>
+                          ))}
                         </div>
                       </div>
-                    </motion.div>
-                  ))}
-                </motion.div>
-              </AnimatePresence>
+                    </div>
 
-              {/* Dots */}
-              {totalPages > 1 && (
-                <div className="mt-5 flex justify-center">
-                  <div className="flex gap-2 rounded-full border border-white/10 bg-black/30 px-3 py-2 backdrop-blur">
-                    {Array.from({ length: totalPages }).map((_, i) => (
-                      <button
-                        key={i}
-                        type="button"
-                        onClick={() => {
-                          setDirection(i > page ? 1 : -1);
-                          setPage(i);
-                        }}
-                        className={`h-2 w-2 rounded-full transition ${
-                          i === page ? "bg-white/80" : "bg-white/25 hover:bg-white/45"
-                        }`}
-                        aria-label={`Go to page ${i + 1}`}
-                      />
-                    ))}
+                    {/* Action Buttons */}
+                    <div className="mt-8 pt-6 border-t border-slate-700/60 flex flex-wrap items-center gap-3">
+                      {currentProject.github && (
+                        <motion.a
+                          href={currentProject.github}
+                          target="_blank"
+                          rel="noreferrer"
+                          whileHover={{ scale: 1.04, y: -2 }}
+                          whileTap={{ scale: 0.96 }}
+                          transition={{ type: "spring", stiffness: 350, damping: 20 }}
+                          className="group inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-[#4f46e5] to-[#4338ca] border border-indigo-400/40 px-5 py-3 text-sm font-semibold text-white shadow-[0_4px_20px_rgba(79,70,229,0.35)] hover:shadow-[0_6px_28px_rgba(79,70,229,0.55)] hover:border-indigo-300 transition-all cursor-pointer"
+                        >
+                          <Github className="h-4 w-4" />
+                          <span>View on GitHub</span>
+                          <ExternalLink className="h-3.5 w-3.5 opacity-80" />
+                        </motion.a>
+                      )}
+
+                      {currentProject.live && (
+                        <motion.a
+                          href={currentProject.live}
+                          target="_blank"
+                          rel="noreferrer"
+                          whileHover={{ scale: 1.04, y: -2 }}
+                          whileTap={{ scale: 0.96 }}
+                          transition={{ type: "spring", stiffness: 350, damping: 20 }}
+                          className="inline-flex items-center gap-2 rounded-xl border border-slate-700 bg-[#141b2d] px-5 py-3 text-sm font-semibold text-slate-100 hover:border-cyan-400 hover:text-white transition-all cursor-pointer shadow-sm"
+                        >
+                          <span>Live Demo</span>
+                          <ExternalLink className="h-3.5 w-3.5" />
+                        </motion.a>
+                      )}
+                    </div>
                   </div>
                 </div>
-              )}
+              </motion.div>
+            </AnimatePresence>
 
-              {/* Mobile hint */}
-              {totalPages > 1 && (
-                <div className="mt-3 text-center text-xs text-white/45 md:hidden">
-                  Swipe left/right to browse
-                </div>
-              )}
+            {/* Mobile-Only Navigation Controls below the big card */}
+            <div className="flex md:hidden items-center justify-between mt-6 px-1">
+              <div className="flex items-center gap-2 rounded-xl border border-slate-700/80 bg-[#141b2d] px-3.5 py-2 shadow-sm">
+                <span className="text-xs uppercase tracking-wider text-slate-400 font-medium">Project</span>
+                <span className="text-sm font-bold text-white font-mono">
+                  {String(projectIndex + 1).padStart(2, "0")}
+                </span>
+                <span className="text-slate-500 font-mono">/</span>
+                <span className="text-sm font-medium text-slate-400 font-mono">
+                  {String(totalProjects).padStart(2, "0")}
+                </span>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <motion.button
+                  type="button"
+                  onClick={prevProject}
+                  whileTap={{ scale: 0.9 }}
+                  className="flex h-11 w-11 items-center justify-center rounded-xl border border-slate-700 bg-[#141b2d] text-slate-200 hover:text-white hover:border-indigo-400 transition-colors shadow-sm cursor-pointer"
+                  aria-label="Previous project"
+                >
+                  <ChevronLeft className="h-5 w-5" />
+                </motion.button>
+
+                <motion.button
+                  type="button"
+                  onClick={nextProject}
+                  whileTap={{ scale: 0.9 }}
+                  className="flex h-11 w-11 items-center justify-center rounded-xl border border-slate-700 bg-[#141b2d] text-slate-200 hover:text-white hover:border-indigo-400 transition-colors shadow-sm cursor-pointer"
+                  aria-label="Next project"
+                >
+                  <ChevronRight className="h-5 w-5" />
+                </motion.button>
+              </div>
             </div>
           </div>
         </FadeUp>
       </div>
-
-      <ProjectModal open={open} project={active} onClose={closeModal} />
     </section>
   );
 }

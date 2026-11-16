@@ -8,24 +8,55 @@ import { motion, AnimatePresence } from "framer-motion";
 function LevelBadge({ level }) {
   const styles = {
     Strong:
-      "bg-emerald-500/15 text-emerald-300 border border-emerald-400/40 shadow-[0_0_20px_rgba(16,185,129,0.25)]",
+      "bg-emerald-500/15 text-emerald-300 border-emerald-500/40 shadow-sm",
     Good:
-      "bg-sky-500/15 text-sky-300 border border-sky-400/40 shadow-[0_0_20px_rgba(56,189,248,0.25)]",
+      "bg-cyan-500/15 text-cyan-300 border-cyan-500/40 shadow-sm",
     Moderate:
-      "bg-orange-500/15 text-orange-300 border border-orange-400/40 shadow-[0_0_20px_rgba(249,115,22,0.25)]",
+      "bg-purple-500/15 text-purple-300 border-purple-500/40 shadow-sm",
   };
 
   return (
     <span
-      className={`text-xs px-3 py-1 rounded-full border backdrop-blur ${styles[level]}`}
+      className={`text-xs font-semibold px-3 py-1 rounded-full border backdrop-blur-md inline-flex items-center gap-1.5 select-none ${
+        styles[level] || styles.Good
+      }`}
     >
+      <span className="h-1.5 w-1.5 rounded-full bg-current" />
       {level}
     </span>
   );
 }
 
+const slideVariants = {
+  enter: (dir) => ({
+    x: dir > 0 ? 65 : -65,
+    opacity: 0,
+    scale: 0.985,
+  }),
+  center: {
+    x: 0,
+    opacity: 1,
+    scale: 1,
+    transition: {
+      x: { type: "spring", stiffness: 190, damping: 25, mass: 0.8 },
+      opacity: { duration: 0.38, ease: [0.22, 1, 0.36, 1] },
+      scale: { duration: 0.38, ease: [0.22, 1, 0.36, 1] },
+    },
+  },
+  exit: (dir) => ({
+    x: dir > 0 ? -65 : 65,
+    opacity: 0,
+    scale: 0.985,
+    transition: {
+      x: { type: "spring", stiffness: 190, damping: 25, mass: 0.8 },
+      opacity: { duration: 0.28, ease: "easeIn" },
+      scale: { duration: 0.28, ease: "easeIn" },
+    },
+  }),
+};
+
 export default function Skills() {
-  // Desktop slider state (unchanged behavior)
+  // Desktop slider state
   const [page, setPage] = useState(0);
   const [direction, setDirection] = useState(1);
 
@@ -59,8 +90,9 @@ export default function Skills() {
       const children = Array.from(el.children);
       if (!children.length) return;
       const left = el.scrollLeft;
-      const width = el.clientWidth || 1;
-      const idx = Math.round(left / width);
+      const card = children[0];
+      const cardWidth = card ? card.offsetWidth + 16 : (el.clientWidth || 1);
+      const idx = Math.round(left / cardWidth);
       setMobileIndex(Math.max(0, Math.min(idx, children.length - 1)));
     };
 
@@ -71,8 +103,9 @@ export default function Skills() {
   const scrollToMobile = (idx) => {
     const el = scrollerRef.current;
     if (!el) return;
-    const w = el.clientWidth;
-    el.scrollTo({ left: idx * w, behavior: "smooth" });
+    const card = el.children[0];
+    const cardWidth = card ? card.offsetWidth + 16 : el.clientWidth;
+    el.scrollTo({ left: idx * cardWidth, behavior: "smooth" });
   };
 
   return (
@@ -80,35 +113,22 @@ export default function Skills() {
       id="skills"
       className="relative px-5 md:px-10 py-16 md:py-24 overflow-hidden"
     >
-      {/* Ambient gradient glow */}
-      <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
-        <div className="absolute top-1/4 -left-20 h-80 w-80 rounded-full bg-indigo-500/18 blur-3xl" />
-        <div className="absolute bottom-10 -right-20 h-96 w-96 rounded-full bg-purple-500/16 blur-3xl" />
-      </div>
-
       <div className="mx-auto max-w-7xl">
         {/* Heading */}
         <FadeUp>
           <div>
-            <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm text-white/70 backdrop-blur">
-              <Sparkles className="h-4 w-4 shrink-0 text-indigo-300" />
-              Skills • Areas of Mastery
-            </div>
-
-            <h2 className="mt-4 text-3xl md:text-5xl font-semibold text-white">
-              What I’m Strong At
+            <h2 className="font-display text-3xl md:text-5xl font-extrabold text-white tracking-tight">
+              What I Excel At
             </h2>
 
-            <p className="mt-3 text-white/60 max-w-3xl">
-              My primary expertise is full-stack web application development,
-              backed by strong database knowledge and applied machine learning
-              integration.
+            <p className="mt-3 text-slate-300 max-w-3xl text-base leading-relaxed">
+              My core capability spans production-grade full-stack web applications, backed by disciplined database modeling and applied machine learning integration.
             </p>
           </div>
         </FadeUp>
 
         {/* ===================== */}
-        {/* MOBILE (swipe, no arrows) */}
+        {/* MOBILE (swipe, clean dots) */}
         {/* ===================== */}
         <div className="mt-10 md:hidden">
           <div
@@ -116,37 +136,30 @@ export default function Skills() {
             className="flex gap-4 overflow-x-auto pb-3 snap-x snap-mandatory scroll-smooth [-ms-overflow-style:none] [scrollbar-width:none]"
             style={{ WebkitOverflowScrolling: "touch" }}
           >
-            {/* hide scrollbar (webkit) */}
-            <style>{`
-              .no-scrollbar::-webkit-scrollbar { display: none; }
-            `}</style>
-
             {skills.map((s) => {
               const Icon = s.icon;
               return (
-                <article
+                <motion.article
                   key={s.title}
-                  className="no-scrollbar snap-center shrink-0 w-full
+                  whileTap={{ scale: 0.98 }}
+                  transition={{ type: "spring", stiffness: 350, damping: 25 }}
+                  className="card-surface cursor-default select-none snap-center shrink-0 w-full
                              group relative overflow-hidden rounded-3xl
-                             border border-white/10 bg-white/[0.04] p-5 sm:p-6 backdrop-blur
-                             transition hover:border-white/20"
+                             border border-slate-700/80 bg-[#131927] p-5 sm:p-6 backdrop-blur-xl
+                             transition-all duration-300 hover:border-indigo-400 shadow-lg"
                 >
-                  <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+                  <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-indigo-400/40 to-transparent" />
 
-                  <div className="flex items-start justify-between gap-3 sm:gap-4">
-                    <div className="flex items-start gap-3 sm:gap-4 min-w-0">
-                      <div className="grid h-11 w-11 sm:h-12 sm:w-12 shrink-0 aspect-square place-items-center rounded-2xl border border-white/10 bg-black/30">
-                        <Icon className="h-5 w-5 shrink-0 text-indigo-200" />
+                  {/* Card Header: Icon & Title on left, Badge on right */}
+                  <div className="flex items-center justify-between gap-3">
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div className="grid h-11 w-11 shrink-0 aspect-square place-items-center rounded-2xl border border-slate-700 bg-[#0e1424] text-indigo-300 shadow-inner">
+                        <Icon className="h-5 w-5 shrink-0" />
                       </div>
 
-                      <div className="min-w-0">
-                        <h3 className="text-lg sm:text-xl font-semibold text-white">
-                          {s.title}
-                        </h3>
-                        <p className="mt-2 text-sm text-white/60 leading-relaxed">
-                          {s.description}
-                        </p>
-                      </div>
+                      <h3 className="font-display text-base sm:text-lg font-bold text-white leading-tight">
+                        {s.title}
+                      </h3>
                     </div>
 
                     <div className="shrink-0">
@@ -154,36 +167,57 @@ export default function Skills() {
                     </div>
                   </div>
 
-                  <div className="mt-6 space-y-3">
+                  {/* Description: Full-width text below header, perfectly readable */}
+                  <p className="mt-3.5 text-sm text-slate-300 leading-relaxed">
+                    {s.description}
+                  </p>
+
+                  <div className="mt-6 space-y-2.5">
                     {s.items.map((item) => (
                       <div
                         key={item}
-                        className="flex items-center gap-3 text-sm text-white/70"
+                        className="flex items-center gap-3 text-sm text-slate-200"
                       >
                         <CheckCircle2 className="h-4 w-4 text-indigo-400 shrink-0" />
-                        {item}
+                        <span>{item}</span>
                       </div>
                     ))}
                   </div>
-                </article>
+
+                  {s.chips && s.chips.length > 0 && (
+                    <div className="mt-5 pt-4 border-t border-slate-700/70 flex flex-wrap gap-1.5">
+                      {s.chips.map((chip) => (
+                        <span
+                          key={chip}
+                          className="rounded-lg border border-slate-700 bg-[#0e1424] px-2.5 py-1 text-[11px] font-semibold text-slate-200"
+                        >
+                          {chip}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </motion.article>
               );
             })}
           </div>
 
-          {/* Mobile dots */}
+          {/* Mobile dots (Clickable pagination) */}
           {skills.length > 1 && (
-            <div className="mt-4 flex justify-center">
-              <div className="flex gap-2 rounded-full border border-white/10 bg-black/30 px-3 py-2 backdrop-blur">
+            <div className="mt-5 flex justify-center">
+              <div className="flex gap-2 rounded-full border border-slate-700 bg-[#141b2d] px-3.5 py-2 backdrop-blur-md shadow-md">
                 {skills.map((_, i) => (
-                  <button
+                  <motion.button
                     key={i}
                     type="button"
                     onClick={() => scrollToMobile(i)}
-                    className={`h-2 w-2 rounded-full transition ${
-                      i === mobileIndex
-                        ? "bg-white/80"
-                        : "bg-white/25 hover:bg-white/45"
-                    }`}
+                    whileHover={{ scale: 1.3 }}
+                    whileTap={{ scale: 0.8 }}
+                    animate={{
+                      scale: i === mobileIndex ? 1.3 : 1,
+                      backgroundColor: i === mobileIndex ? "#818cf8" : "rgba(255,255,255,0.35)",
+                    }}
+                    transition={{ type: "spring", stiffness: 350, damping: 22 }}
+                    className="h-2 w-2 rounded-full cursor-pointer"
                     aria-label={`Go to skill ${i + 1}`}
                   />
                 ))}
@@ -193,99 +227,122 @@ export default function Skills() {
         </div>
 
         {/* ===================== */}
-        {/* DESKTOP (keep arrows + 2 per slide) */}
+        {/* DESKTOP (carousel + 2 per slide) */}
         {/* ===================== */}
         <div className="relative mt-12 hidden md:block">
           {/* Left Arrow */}
           {totalPages > 1 && (
-            <button
+            <motion.button
               onClick={prev}
+              whileHover={{ scale: 1.12, x: -3 }}
+              whileTap={{ scale: 0.9 }}
+              transition={{ type: "spring", stiffness: 350, damping: 20 }}
               aria-label="Previous skills"
               className="absolute -left-16 top-1/2 -translate-y-1/2 z-20
                          h-12 w-12 rounded-full
-                         border border-white/10
-                         bg-white/5 backdrop-blur-xl
-                         hover:bg-white/10 hover:border-white/20
-                         transition-all duration-300
-                         hover:scale-110 active:scale-95
+                         border border-slate-700
+                         bg-[#141b2d] backdrop-blur-xl
+                         hover:bg-[#1d2740] hover:border-indigo-400
                          flex items-center justify-center
-                         text-white/80 hover:text-white"
+                         text-slate-200 hover:text-white transition-all cursor-pointer shadow-lg"
             >
               <ChevronLeft className="h-5 w-5" />
-            </button>
+            </motion.button>
           )}
 
           {/* Right Arrow */}
           {totalPages > 1 && (
-            <button
+            <motion.button
               onClick={next}
+              whileHover={{ scale: 1.12, x: 3 }}
+              whileTap={{ scale: 0.9 }}
+              transition={{ type: "spring", stiffness: 350, damping: 20 }}
               aria-label="Next skills"
               className="absolute -right-16 top-1/2 -translate-y-1/2 z-20
                          h-12 w-12 rounded-full
-                         border border-white/10
-                         bg-white/5 backdrop-blur-xl
-                         hover:bg-white/10 hover:border-white/20
-                         transition-all duration-300
-                         hover:scale-110 active:scale-95
+                         border border-slate-700
+                         bg-[#141b2d] backdrop-blur-xl
+                         hover:bg-[#1d2740] hover:border-indigo-400
                          flex items-center justify-center
-                         text-white/80 hover:text-white"
+                         text-slate-200 hover:text-white transition-all cursor-pointer shadow-lg"
             >
               <ChevronRight className="h-5 w-5" />
-            </button>
+            </motion.button>
           )}
 
           {/* Slide */}
-          <AnimatePresence mode="wait" initial={false}>
+          <AnimatePresence mode="popLayout" initial={false} custom={direction}>
             <motion.div
               key={page}
-              initial={{ opacity: 0, x: direction > 0 ? 100 : -100 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: direction > 0 ? -100 : 100 }}
-              transition={{ type: "spring", stiffness: 70, damping: 18 }}
-              className="grid gap-6 lg:grid-cols-2"
+              custom={direction}
+              variants={slideVariants}
+              initial="enter"
+              animate="center"
+              exit="exit"
+              className="w-full grid gap-6 lg:grid-cols-2"
             >
               {current.map((s) => {
                 const Icon = s.icon;
                 return (
-                  <article
+                  <motion.article
                     key={s.title}
-                    className="group relative overflow-hidden rounded-3xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur transition hover:border-white/20"
+                    whileHover={{
+                      y: -6,
+                      scale: 1.015,
+                      transition: { type: "spring", stiffness: 280, damping: 22 },
+                    }}
+                    className="card-surface cursor-default select-none group relative overflow-hidden rounded-3xl border border-slate-700/80 bg-[#131927] p-7 backdrop-blur-xl transition-all duration-300 hover:border-indigo-400 hover:bg-[#192235] hover:shadow-[0_20px_40px_rgba(0,0,0,0.5)] flex flex-col justify-between"
                   >
-                    <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+                    <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-indigo-400/40 to-transparent" />
 
-                    <div className="flex items-start justify-between gap-3 sm:gap-4">
-                      <div className="flex items-start gap-3 sm:gap-4 min-w-0">
-                        <div className="grid h-11 w-11 sm:h-12 sm:w-12 shrink-0 aspect-square place-items-center rounded-2xl border border-white/10 bg-black/30">
-                          <Icon className="h-5 w-5 shrink-0 text-indigo-200" />
+                    <div>
+                      <div className="flex items-start justify-between gap-4">
+                        <div className="flex items-start gap-4 min-w-0">
+                          <div className="grid h-12 w-12 shrink-0 aspect-square place-items-center rounded-2xl border border-slate-700 bg-[#0e1424] text-indigo-300 shadow-inner group-hover:border-indigo-400 group-hover:text-white transition-colors">
+                            <Icon className="h-6 w-6 shrink-0" />
+                          </div>
+
+                          <div className="min-w-0">
+                            <h3 className="font-display text-xl font-bold text-white group-hover:text-indigo-200 transition-colors">
+                              {s.title}
+                            </h3>
+                            <p className="mt-1.5 text-sm text-slate-300 leading-relaxed">
+                              {s.description}
+                            </p>
+                          </div>
                         </div>
 
-                        <div className="min-w-0">
-                          <h3 className="text-lg sm:text-xl font-semibold text-white">
-                            {s.title}
-                          </h3>
-                          <p className="mt-2 text-sm text-white/60 leading-relaxed">
-                            {s.description}
-                          </p>
+                        <div className="shrink-0">
+                          <LevelBadge level={s.level} />
                         </div>
                       </div>
 
-                      <div className="shrink-0">
-                      <LevelBadge level={s.level} />
-                    </div>
+                      <div className="mt-6 space-y-3">
+                        {s.items.map((item) => (
+                          <div
+                            key={item}
+                            className="flex items-center gap-3 text-sm text-slate-200"
+                          >
+                            <CheckCircle2 className="h-4 w-4 text-indigo-400 shrink-0" />
+                            <span>{item}</span>
+                          </div>
+                        ))}
+                      </div>
                     </div>
 
-                    <div className="mt-6 space-y-3">
-                      {s.items.map((item) => (
-                        <div
-                          key={item}
-                          className="flex items-center gap-3 text-sm text-white/70"
-                        >
-                          <CheckCircle2 className="h-4 w-4 text-indigo-400 shrink-0" />
-                          {item}
-                        </div>
-                      ))}
-                    </div>
-                  </article>
+                    {s.chips && s.chips.length > 0 && (
+                      <div className="mt-6 pt-4 border-t border-slate-700/70 flex flex-wrap gap-2 select-none">
+                        {s.chips.map((chip) => (
+                          <span
+                            key={chip}
+                            className="rounded-lg border border-slate-700 bg-[#0e1424] px-3 py-1 text-xs font-semibold text-slate-200"
+                          >
+                            {chip}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                  </motion.article>
                 );
               })}
             </motion.div>

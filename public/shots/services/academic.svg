@@ -1,0 +1,112 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0c111e"/>
+      <stop offset="100%" stop-color="#141c2e"/>
+    </linearGradient>
+    <linearGradient id="primaryGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#6366f1"/>
+      <stop offset="100%" stop-color="#06b6d4"/>
+    </linearGradient>
+    <linearGradient id="cardGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#182238"/>
+      <stop offset="100%" stop-color="#101726"/>
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="8" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+  </defs>
+
+  <!-- Background Canvas -->
+  <rect width="800" height="500" rx="20" fill="url(#bgGrad)"/>
+  
+  <!-- Subtle Grid Pattern -->
+  <g opacity="0.06" stroke="#ffffff" stroke-width="1">
+    <line x1="100" y1="0" x2="100" y2="500"/>
+    <line x1="200" y1="0" x2="200" y2="500"/>
+    <line x1="300" y1="0" x2="300" y2="500"/>
+    <line x1="400" y1="0" x2="400" y2="500"/>
+    <line x1="500" y1="0" x2="500" y2="500"/>
+    <line x1="600" y1="0" x2="600" y2="500"/>
+    <line x1="700" y1="0" x2="700" y2="500"/>
+    <line x1="0" y1="100" x2="800" y2="100"/>
+    <line x1="0" y1="200" x2="800" y2="200"/>
+    <line x1="0" y1="300" x2="800" y2="300"/>
+    <line x1="0" y1="400" x2="800" y2="400"/>
+  </g>
+
+  <!-- Ambient Glow Behind Paper -->
+  <circle cx="360" cy="240" r="140" fill="#6366f1" opacity="0.12" filter="url(#glow)"/>
+  <circle cx="520" cy="280" r="100" fill="#06b6d4" opacity="0.09" filter="url(#glow)"/>
+
+  <!-- Main Academic Manuscript / Research Sheet -->
+  <g transform="translate(140, 50)">
+    <!-- Document Shadow -->
+    <rect x="0" y="0" width="380" height="400" rx="14" fill="#060912" opacity="0.6"/>
+    <!-- Document Surface -->
+    <rect x="-6" y="-6" width="380" height="400" rx="14" fill="url(#cardGrad)" stroke="#334155" stroke-width="1.5"/>
+    <rect x="-6" y="-6" width="380" height="400" rx="14" fill="none" stroke="url(#primaryGrad)" stroke-width="1" opacity="0.4"/>
+
+    <!-- Document Header Badge -->
+    <rect x="24" y="24" width="110" height="24" rx="6" fill="#6366f1" fill-opacity="0.2" stroke="#6366f1" stroke-opacity="0.4"/>
+    <text x="36" y="40" fill="#a5b4fc" font-family="system-ui, sans-serif" font-size="11" font-weight="700" letter-spacing="1">IEEE STANDARD</text>
+
+    <!-- Paper Title Placeholder -->
+    <rect x="24" y="64" width="280" height="14" rx="4" fill="#ffffff" opacity="0.9"/>
+    <rect x="24" y="86" width="200" height="10" rx="3" fill="#94a3b8" opacity="0.7"/>
+
+    <!-- Abstract Box -->
+    <rect x="24" y="112" width="320" height="66" rx="8" fill="#0c111e" stroke="#1e293b" stroke-width="1"/>
+    <text x="36" y="130" fill="#38bdf8" font-family="system-ui, sans-serif" font-size="10" font-weight="700">ABSTRACT</text>
+    <rect x="36" y="140" width="290" height="6" rx="2" fill="#64748b" opacity="0.6"/>
+    <rect x="36" y="152" width="260" height="6" rx="2" fill="#64748b" opacity="0.6"/>
+    <rect x="36" y="164" width="220" height="6" rx="2" fill="#64748b" opacity="0.6"/>
+
+    <!-- 2-Column Manuscript Body -->
+    <!-- Column 1 -->
+    <rect x="24" y="196" width="150" height="8" rx="2" fill="#a5b4fc" opacity="0.8"/>
+    <rect x="24" y="212" width="150" height="5" rx="2" fill="#64748b" opacity="0.5"/>
+    <rect x="24" y="222" width="140" height="5" rx="2" fill="#64748b" opacity="0.5"/>
+    <rect x="24" y="232" width="145" height="5" rx="2" fill="#64748b" opacity="0.5"/>
+    <rect x="24" y="242" width="130" height="5" rx="2" fill="#64748b" opacity="0.5"/>
+
+    <!-- Formula Box in Col 1 -->
+    <rect x="24" y="258" width="150" height="42" rx="6" fill="#0f172a" stroke="#334155" stroke-width="1"/>
+    <text x="44" y="284" fill="#38bdf8" font-family="monospace" font-size="12" font-weight="600">f(x) = ∑ wi · φi(x)</text>
+
+    <!-- Column 2 -->
+    <rect x="194" y="196" width="150" height="8" rx="2" fill="#a5b4fc" opacity="0.8"/>
+    <!-- Mini Analytical Chart in Col 2 -->
+    <rect x="194" y="212" width="150" height="88" rx="6" fill="#0f172a" stroke="#334155" stroke-width="1"/>
+    <!-- Bars -->
+    <rect x="210" y="260" width="18" height="30" rx="3" fill="#6366f1"/>
+    <rect x="238" y="240" width="18" height="50" rx="3" fill="#818cf8"/>
+    <rect x="266" y="230" width="18" height="60" rx="3" fill="#38bdf8"/>
+    <rect x="294" y="220" width="18" height="70" rx="3" fill="#22d3ee"/>
+
+    <!-- Reference Section Footnote -->
+    <line x1="24" y1="320" x2="344" y2="320" stroke="#334155" stroke-width="1" stroke-dasharray="4 4"/>
+    <text x="24" y="340" fill="#94a3b8" font-family="system-ui, sans-serif" font-size="9" font-weight="600">REFERENCES &amp; CITATIONS (APA / IEEE)</text>
+    <rect x="24" y="350" width="300" height="5" rx="2" fill="#64748b" opacity="0.4"/>
+    <rect x="24" y="362" width="260" height="5" rx="2" fill="#64748b" opacity="0.4"/>
+  </g>
+
+  <!-- Side Floating Validation Badge: Plagiarism 0.0% -->
+  <g transform="translate(480, 110)">
+    <rect width="190" height="76" rx="12" fill="#131c30" stroke="#334155" stroke-width="1.5" opacity="0.95"/>
+    <circle cx="34" cy="38" r="18" fill="#10b981" fill-opacity="0.2"/>
+    <path d="M26 38 L32 44 L42 32" fill="none" stroke="#34d399" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="62" y="32" fill="#f8fafc" font-family="system-ui, sans-serif" font-size="12" font-weight="700">Originality 100%</text>
+    <text x="62" y="50" fill="#94a3b8" font-family="system-ui, sans-serif" font-size="10">Verified Plagiarism-Free</text>
+  </g>
+
+  <!-- Side Floating Badge 2: Rigorous Citation -->
+  <g transform="translate(490, 290)">
+    <rect width="180" height="66" rx="12" fill="#131c30" stroke="#334155" stroke-width="1.5" opacity="0.95"/>
+    <circle cx="32" cy="33" r="16" fill="#6366f1" fill-opacity="0.2"/>
+    <text x="26" y="38" fill="#818cf8" font-family="system-ui, sans-serif" font-size="16" font-weight="bold">§</text>
+    <text x="58" y="28" fill="#f8fafc" font-family="system-ui, sans-serif" font-size="11" font-weight="700">Peer-Review Ready</text>
+    <text x="58" y="44" fill="#94a3b8" font-family="system-ui, sans-serif" font-size="10">Strict Research Standards</text>
+  </g>
+</svg>

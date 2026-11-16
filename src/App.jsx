@@ -1,6 +1,7 @@
 import Navbar from "./components/Navbar";
 import Hero from "./sections/Hero";
 import Projects from "./sections/Projects";
+import Services from "./sections/Services";
 import Skills from "./sections/Skills";
 import Timeline from "./sections/Timeline";
 import Contact from "./sections/Contact";
@@ -9,28 +10,28 @@ import SectionDivider from "./components/SectionDivider";
 
 export default function App() {
   return (
-    <div className="relative min-h-screen text-white selection:bg-indigo-500/30 selection:text-white">
-      {/* Fixed global atmospheric radial gradient that seamlessly persists across scrolling without cutoff */}
+    <div className="relative min-h-screen bg-[#0b0f19] text-slate-100 font-sans selection:bg-indigo-500/35 selection:text-white overflow-x-clip">
+      {/* Clean Modern Dark Backdrop: Crisp slate gradient & technical architectural grid without bubbles */}
       <div
-        className="fixed inset-0 pointer-events-none -z-10"
+        className="fixed inset-0 pointer-events-none -z-10 overflow-hidden"
         aria-hidden="true"
-        style={{
-          background: `
-            radial-gradient(120vw 60vh at 20% 8%, rgba(99,102,241,0.30), transparent 70%),
-            radial-gradient(100vw 50vh at 80% 20%, rgba(168,85,247,0.25), transparent 70%),
-            radial-gradient(110vw 60vh at 15% 50%, rgba(99,102,241,0.22), transparent 70%),
-            radial-gradient(100vw 55vh at 85% 72%, rgba(168,85,247,0.22), transparent 70%),
-            radial-gradient(90vw 60vh at 50% 92%, rgba(34,211,238,0.20), transparent 75%),
-            #05060a
-          `,
-        }}
-      />
+      >
+        {/* Subtle linear studio gradation (no colorful blurry bubbles) */}
+        <div className="absolute inset-0 bg-gradient-to-b from-[#0e1424] via-[#0b0f19] to-[#080b12]" />
+
+        {/* Clean geometric micro-grid for architectural precision */}
+        <div
+          className="absolute inset-0 opacity-[0.03] pointer-events-none [background-image:linear-gradient(to_right,rgba(255,255,255,0.3)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.3)_1px,transparent_1px)] [background-size:40px_40px]"
+        />
+      </div>
 
       <Navbar />
-      <main>
+      <main className="relative z-10">
         <Hero />
         <SectionDivider />
         <Projects />
+        <SectionDivider />
+        <Services />
         <SectionDivider />
         <Skills />
         <SectionDivider />
