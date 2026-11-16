@@ -47,20 +47,20 @@ export default function Contact() {
                   whileHover={{ scale: 1.05, y: -2 }}
                   whileTap={{ scale: 0.95 }}
                   transition={{ type: "spring", stiffness: 380, damping: 20 }}
-                  className="group inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-[#4f46e5] to-[#4338ca] border border-indigo-400/40 px-7 py-3.5 text-base font-semibold text-white shadow-[0_4px_20px_rgba(79,70,229,0.35)] hover:shadow-[0_6px_28px_rgba(79,70,229,0.55)] hover:border-indigo-300 transition-all cursor-pointer"
+                  className="group inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-[#4f46e5] to-[#4338ca] border border-indigo-400/40 px-7 py-3.5 text-base font-semibold text-white shadow-[0_4px_20px_rgba(79,70,229,0.35)] hover:shadow-[0_6px_28px_rgba(79,70,229,0.55)] hover:border-indigo-300 transition-all cursor-pointer w-full sm:w-auto"
                 >
                   <Send className="h-4 w-4 text-indigo-200 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                   <span>Email Me Directly</span>
                 </motion.a>
 
-                {/* Copy Email Button */}
+                {/* Copy Email Button (Desktop/Tablet only, hidden on mobile) */}
                 <motion.button
                   type="button"
                   onClick={handleCopyEmail}
                   whileHover={{ scale: 1.05, y: -2 }}
                   whileTap={{ scale: 0.95 }}
                   transition={{ type: "spring", stiffness: 380, damping: 20 }}
-                  className="inline-flex items-center gap-2 rounded-2xl border border-slate-700 bg-[#161f33] px-6 py-3.5 text-base font-semibold text-slate-100 backdrop-blur-xl transition-all hover:border-indigo-400 hover:bg-[#1d2944] hover:text-white cursor-pointer shadow-sm"
+                  className="hidden sm:inline-flex items-center gap-2 rounded-2xl border border-slate-700 bg-[#161f33] px-6 py-3.5 text-base font-semibold text-slate-100 backdrop-blur-xl transition-all hover:border-indigo-400 hover:bg-[#1d2944] hover:text-white cursor-pointer shadow-sm"
                 >
                   {copied ? (
                     <>
@@ -75,7 +75,7 @@ export default function Contact() {
                   )}
                 </motion.button>
 
-                {/* GitHub */}
+                {/* GitHub Button (Desktop/Tablet only, hidden on mobile) */}
                 <motion.a
                   href={profile.github}
                   target="_blank"
@@ -83,16 +83,17 @@ export default function Contact() {
                   whileHover={{ scale: 1.05, y: -2 }}
                   whileTap={{ scale: 0.95 }}
                   transition={{ type: "spring", stiffness: 380, damping: 20 }}
-                  className="inline-flex items-center gap-2 rounded-2xl border border-slate-700 bg-[#161f33] px-6 py-3.5 text-base font-semibold text-slate-100 backdrop-blur-xl transition-all hover:border-cyan-400 hover:bg-[#1d2944] hover:text-white cursor-pointer shadow-sm"
+                  className="hidden sm:inline-flex items-center gap-2 rounded-2xl border border-slate-700 bg-[#161f33] px-6 py-3.5 text-base font-semibold text-slate-100 backdrop-blur-xl transition-all hover:border-cyan-400 hover:bg-[#1d2944] hover:text-white cursor-pointer shadow-sm"
                 >
                   <Github className="h-4 w-4 text-slate-300" />
                   <span>GitHub</span>
                 </motion.a>
               </div>
 
-              {/* Contact Information Chips */}
-              <div className="mt-10 pt-8 border-t border-slate-700/70 grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
-                <div className="rounded-2xl border border-slate-700/70 bg-[#0e1424] p-4 flex flex-col items-center justify-center shadow-sm">
+              {/* Contact Information Chips: Email chip hidden on mobile to save space, Phone & Location shown in 2-cols */}
+              <div className="mt-10 pt-8 border-t border-slate-700/70 grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4 text-center">
+                {/* Individual Email showing - hidden on mobile */}
+                <div className="hidden sm:flex rounded-2xl border border-slate-700/70 bg-[#0e1424] p-4 flex-col items-center justify-center shadow-sm">
                   <Mail className="h-5 w-5 text-indigo-400 mb-1.5" />
                   <span className="text-xs text-slate-400 font-semibold uppercase tracking-wider">Email</span>
                   <span className="text-sm text-slate-200 font-medium mt-0.5 truncate max-w-full">
@@ -100,18 +101,18 @@ export default function Contact() {
                   </span>
                 </div>
 
-                <div className="rounded-2xl border border-slate-700/70 bg-[#0e1424] p-4 flex flex-col items-center justify-center shadow-sm">
+                <div className="rounded-2xl border border-slate-700/70 bg-[#0e1424] p-3.5 sm:p-4 flex flex-col items-center justify-center shadow-sm">
                   <Phone className="h-5 w-5 text-cyan-400 mb-1.5" />
                   <span className="text-xs text-slate-400 font-semibold uppercase tracking-wider">Phone</span>
-                  <span className="text-sm text-slate-200 font-medium mt-0.5">
+                  <span className="text-xs sm:text-sm text-slate-200 font-medium mt-0.5">
                     {profile.phone}
                   </span>
                 </div>
 
-                <div className="rounded-2xl border border-slate-700/70 bg-[#0e1424] p-4 flex flex-col items-center justify-center shadow-sm">
+                <div className="rounded-2xl border border-slate-700/70 bg-[#0e1424] p-3.5 sm:p-4 flex flex-col items-center justify-center shadow-sm">
                   <MapPin className="h-5 w-5 text-purple-400 mb-1.5" />
                   <span className="text-xs text-slate-400 font-semibold uppercase tracking-wider">Location</span>
-                  <span className="text-sm text-slate-200 font-medium mt-0.5">
+                  <span className="text-xs sm:text-sm text-slate-200 font-medium mt-0.5">
                     {profile.location}
                   </span>
                 </div>

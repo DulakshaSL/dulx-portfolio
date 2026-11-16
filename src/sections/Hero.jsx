@@ -112,7 +112,7 @@ export default function Hero() {
                   {/* Inner Dark Card Bevel & Portrait Image */}
                   <div className="relative rounded-full overflow-hidden bg-[#0c101a] p-1">
                     <img
-                      src={`${import.meta.env.BASE_URL}profile.jpeg`}
+                      src={`${import.meta.env.BASE_URL}profile.jpg`}
                       alt="Dulaksha Wijesinghe"
                       draggable={false}
                       className="

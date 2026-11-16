@@ -125,7 +125,8 @@ export default function Services() {
 
         {/* Interactive Service Switcher Tabs - Centered & Matching Style */}
         <FadeUp delay={0.05}>
-          <div className="mb-8 flex justify-center overflow-x-auto pb-2 snap-x scroll-smooth [-ms-overflow-style:none] [scrollbar-width:none]">
+          {/* DESKTOP TABS: Centered & Spacious */}
+          <div className="mb-8 hidden md:flex justify-center">
             <div className="flex gap-2 p-1.5 rounded-2xl border border-slate-800/80 bg-[#101626]/80 backdrop-blur-md shadow-sm max-w-full">
               {services.map((item, index) => {
                 const TabIcon = iconMap[item.iconName] || Sparkles;
@@ -138,7 +139,7 @@ export default function Services() {
                       setDirection(index > activeTab ? 1 : -1);
                       setActiveTab(index);
                     }}
-                    className={`relative flex items-center gap-2.5 px-4 sm:px-5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 select-none cursor-pointer whitespace-nowrap ${
+                    className={`relative flex items-center gap-2.5 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 select-none cursor-pointer whitespace-nowrap ${
                       isSelected
                         ? "text-white"
                         : "text-slate-400 hover:text-slate-200 hover:bg-white/[0.04]"
@@ -155,7 +156,53 @@ export default function Services() {
 
                     {isSelected && (
                       <motion.div
-                        layoutId="activeServiceTab"
+                        layoutId="activeServiceTabDesktop"
+                        className="absolute inset-0 rounded-xl bg-[#1a233a] border border-slate-700/80 shadow-sm"
+                        transition={{ type: "spring", stiffness: 380, damping: 28 }}
+                      />
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* MOBILE TABS: Clean 3-col segmented bar fitting 100% of phone screen without overflow */}
+          <div className="mb-6 flex md:hidden px-1">
+            <div className="grid grid-cols-3 gap-1 p-1 rounded-2xl border border-slate-800/90 bg-[#101626]/95 backdrop-blur-md shadow-sm w-full">
+              {services.map((item, index) => {
+                const TabIcon = iconMap[item.iconName] || Sparkles;
+                const isSelected = activeTab === index;
+                // Compact mobile labels to fit screen cleanly
+                const mobileLabel =
+                  index === 0 ? "Web Apps" : index === 1 ? "Academic" : "Content";
+
+                return (
+                  <button
+                    key={item.id}
+                    type="button"
+                    onClick={() => {
+                      setDirection(index > activeTab ? 1 : -1);
+                      setActiveTab(index);
+                    }}
+                    className={`relative flex items-center justify-center gap-1.5 py-2.5 px-1.5 rounded-xl text-xs font-semibold transition-all duration-200 select-none cursor-pointer text-center ${
+                      isSelected
+                        ? "text-white font-bold"
+                        : "text-slate-400 hover:text-slate-200"
+                    }`}
+                  >
+                    <span className="relative z-10 flex items-center justify-center gap-1.5 truncate">
+                      <TabIcon
+                        className={`h-3.5 w-3.5 shrink-0 transition-colors ${
+                          isSelected ? "text-indigo-400" : "text-slate-500"
+                        }`}
+                      />
+                      <span className="truncate">{mobileLabel}</span>
+                    </span>
+
+                    {isSelected && (
+                      <motion.div
+                        layoutId="activeServiceTabMobile"
                         className="absolute inset-0 rounded-xl bg-[#1a233a] border border-slate-700/80 shadow-sm"
                         transition={{ type: "spring", stiffness: 380, damping: 28 }}
                       />
@@ -183,15 +230,15 @@ export default function Services() {
                 initial="enter"
                 animate="center"
                 exit="exit"
-                className="card-surface relative overflow-hidden rounded-3xl border border-slate-700/80 bg-[#131927] p-6 md:p-8 lg:p-10 backdrop-blur-xl shadow-[0_20px_50px_rgba(0,0,0,0.6)] cursor-default select-none touch-pan-y"
+                className="card-surface relative overflow-hidden rounded-3xl border border-slate-700/80 bg-[#131927] p-5 sm:p-7 md:p-8 lg:p-10 backdrop-blur-xl shadow-[0_20px_50px_rgba(0,0,0,0.6)] cursor-default select-none touch-pan-y"
               >
                 {/* Top Subtle Hairline Gradient Beam */}
                 <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-indigo-400/60 to-transparent opacity-80" />
 
-                <div className="grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-10 items-stretch">
-                  {/* LEFT COLUMN: Dedicated Service Visual / Custom Portrait Image (Takes full height, no border) */}
+                <div className="grid grid-cols-1 md:grid-cols-12 gap-6 sm:gap-8 lg:gap-10 items-stretch">
+                  {/* LEFT COLUMN: Dedicated Service Visual / Custom Portrait Image (Compact on mobile, full height on desktop) */}
                   <div className="md:col-span-5 lg:col-span-5 flex flex-col">
-                    <div className="relative w-full h-full min-h-[380px] sm:min-h-[440px] md:min-h-full overflow-hidden rounded-2xl select-none">
+                    <div className="relative w-full h-44 sm:h-52 md:h-full md:min-h-full overflow-hidden rounded-2xl select-none">
                       {currentService.image ? (
                         <AnimatePresence mode="popLayout" initial={false}>
                           <motion.img
